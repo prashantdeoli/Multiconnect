@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace multiconnect {
 
@@ -27,11 +28,7 @@ class SyncEngine {
     bool applyDriftCorrectionMs(const std::string& deviceId, float driftMs, int32_t sampleRateHz);
 
     // Pulls cloned samples for a specific device based on its read head and offset.
-    // Returns false if device is unknown. When true, outReadSamples contains actual sample count read.
-    bool pullForDevice(const std::string& deviceId,
-                       int16_t* output,
-                       std::size_t sampleCount,
-                       std::size_t* outReadSamples = nullptr);
+    bool pullForDevice(const std::string& deviceId, int16_t* output, std::size_t sampleCount);
 
     [[nodiscard]] std::size_t bufferedSamples() const;
     [[nodiscard]] bool hasDevice(const std::string& deviceId) const;
