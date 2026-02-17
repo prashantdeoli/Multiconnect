@@ -1,3 +1,4 @@
+#include "multiconnect/logging.h"
 #include "multiconnect/master_ring_buffer.h"
 #include "multiconnect/sync_math.h"
 

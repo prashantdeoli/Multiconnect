@@ -14,7 +14,7 @@ Establish a reproducible feasibility baseline for MultiConnect.
 - [ ] Initialize Android Studio project with NDK + CMake enabled.
 - [ ] Add native module stubs for `sync-core` and `bt-router`.
 - [ ] Configure build variants: `pocDebug`, `alphaDebug`.
-- [ ] Add logging baseline (Logcat tags + native logging macros).
+- [x] Add logging baseline (Logcat tags + native logging macros) via `native/include/multiconnect/logging.h`.
 
 ### C. POC Harness
 - [ ] Implement native beep generator (1-second test pattern).
