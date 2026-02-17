@@ -28,6 +28,8 @@ Establish a reproducible feasibility baseline for MultiConnect.
 - [x] Lock first test phone(s) and fallback phone(s) using the team alignment template.
 
 ## First Meeting Acceptance Questions
+Reference baseline: `docs/day1-baseline-report.md`
+
 - Can we push a raw test signal to two mixed-brand targets simultaneously?
 - What is the baseline latency gap between target devices?
 - Is there audible crackle/popping under current buffer strategy?
