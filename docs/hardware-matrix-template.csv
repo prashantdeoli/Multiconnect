@@ -1,0 +1,1 @@
+run_id,date,phone_model,phone_bt_version,speaker_brand,speaker_model,speaker_bt_version,battery_percent,signal_strength_dbm,observed_latency_ms,drift_after_30m_ms,drift_after_120m_ms,dropouts_count,notes
