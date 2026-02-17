@@ -54,5 +54,3 @@ Run the baseline native checks (build + unit tests + POC pass/fail run):
 ```
 
 The POC harness now writes run artifacts (`timestamp`, `devices`, `outcome`, and `notes`) to `native/build/artifacts/` when invoked with `--artifact-dir`.
-
-The native checks also execute sync-engine and beep-generator unit tests to keep core timing primitives covered in CI/local runs.
