@@ -2,10 +2,18 @@
 #include "multiconnect/sync_math.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
+#include <ctime>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <string_view>
 #include <vector>
 
 namespace {
@@ -29,16 +37,195 @@ std::size_t findFirstImpulse(const std::vector<int16_t>& signal, int16_t thresho
     }
     return signal.size();
 }
+
+struct CliOptions {
+    int32_t offsetMsDeviceB = 35;
+    double thresholdMs = 1.0;
+    std::string artifactDir;
+    std::string deviceA = "deviceA";
+    std::string deviceB = "deviceB";
+    std::string notes;
+};
+
+bool parseDouble(std::string_view text, double* outValue) {
+    if (outValue == nullptr) {
+        return false;
+    }
+
+    char* end = nullptr;
+    const std::string owned(text);
+    const double value = std::strtod(owned.c_str(), &end);
+    if (end == owned.c_str() || *end != '\0') {
+        return false;
+    }
+
+    *outValue = value;
+    return true;
+}
+
+bool parseInt32(std::string_view text, int32_t* outValue) {
+    if (outValue == nullptr) {
+        return false;
+    }
+
+    char* end = nullptr;
+    const std::string owned(text);
+    const long value = std::strtol(owned.c_str(), &end, 10);
+    if (end == owned.c_str() || *end != '\0') {
+        return false;
+    }
+
+    if (value < static_cast<long>(INT32_MIN) || value > static_cast<long>(INT32_MAX)) {
+        return false;
+    }
+
+    *outValue = static_cast<int32_t>(value);
+    return true;
+}
+
+CliOptions parseArgs(int argc, char** argv) {
+    CliOptions options;
+    bool offsetAssigned = false;
+
+    for (int i = 1; i < argc; ++i) {
+        const std::string arg = argv[i];
+
+        if (arg == "--threshold-ms" && i + 1 < argc) {
+            double parsed = 0.0;
+            if (parseDouble(argv[++i], &parsed) && parsed >= 0.0) {
+                options.thresholdMs = parsed;
+            }
+            continue;
+        }
+
+        if (arg == "--artifact-dir" && i + 1 < argc) {
+            options.artifactDir = argv[++i];
+            continue;
+        }
+
+        if (arg == "--device-a" && i + 1 < argc) {
+            options.deviceA = argv[++i];
+            continue;
+        }
+
+        if (arg == "--device-b" && i + 1 < argc) {
+            options.deviceB = argv[++i];
+            continue;
+        }
+
+        if (arg == "--notes" && i + 1 < argc) {
+            options.notes = argv[++i];
+            continue;
+        }
+
+        if (!offsetAssigned) {
+            int32_t offsetMs = 0;
+            if (parseInt32(arg, &offsetMs)) {
+                options.offsetMsDeviceB = offsetMs;
+                offsetAssigned = true;
+            }
+        }
+    }
+
+    return options;
+}
+
+std::string makeRunTimestamp() {
+    const auto now = std::chrono::system_clock::now();
+    const auto nowTime = std::chrono::system_clock::to_time_t(now);
+
+    std::tm tm{};
+#if defined(_WIN32)
+    gmtime_s(&tm, &nowTime);
+#else
+    gmtime_r(&nowTime, &tm);
+#endif
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y%m%dT%H%M%SZ");
+    return oss.str();
+}
+
+std::string jsonEscape(const std::string& value) {
+    std::ostringstream escaped;
+    for (const unsigned char ch : value) {
+        switch (ch) {
+            case '"':
+                escaped << "\\\"";
+                break;
+            case '\\':
+                escaped << "\\\\";
+                break;
+            case '\b':
+                escaped << "\\b";
+                break;
+            case '\f':
+                escaped << "\\f";
+                break;
+            case '\n':
+                escaped << "\\n";
+                break;
+            case '\r':
+                escaped << "\\r";
+                break;
+            case '\t':
+                escaped << "\\t";
+                break;
+            default:
+                if (ch < 0x20) {
+                    escaped << "\\u" << std::hex << std::setw(4) << std::setfill('0') << static_cast<int>(ch)
+                            << std::dec;
+                } else {
+                    escaped << static_cast<char>(ch);
+                }
+                break;
+        }
+    }
+
+    return escaped.str();
+}
+
+void writeArtifactReport(const CliOptions& options,
+                         int32_t sampleRateHz,
+                         int32_t durationMs,
+                         double measuredOffsetMs,
+                         double errorFromRequestedMs,
+                         bool pass) {
+    if (options.artifactDir.empty()) {
+        return;
+    }
+
+    namespace fs = std::filesystem;
+    fs::create_directories(options.artifactDir);
+
+    const auto timestamp = makeRunTimestamp();
+    const fs::path outputPath = fs::path(options.artifactDir) / ("poc_run_" + timestamp + ".json");
+    std::ofstream out(outputPath);
+    if (!out.is_open()) {
+        std::cerr << "WARN unable to open artifact report path=" << outputPath << '\n';
+        return;
+    }
+
+    out << "{\n"
+        << "  \"timestamp\": \"" << jsonEscape(timestamp) << "\",\n"
+        << "  \"sampleRateHz\": " << sampleRateHz << ",\n"
+        << "  \"durationMs\": " << durationMs << ",\n"
+        << "  \"deviceA\": \"" << jsonEscape(options.deviceA) << "\",\n"
+        << "  \"deviceB\": \"" << jsonEscape(options.deviceB) << "\",\n"
+        << "  \"requestedOffsetMs\": " << options.offsetMsDeviceB << ",\n"
+        << "  \"measuredOffsetMs\": " << measuredOffsetMs << ",\n"
+        << "  \"errorFromRequestedMs\": " << errorFromRequestedMs << ",\n"
+        << "  \"thresholdMs\": " << options.thresholdMs << ",\n"
+        << "  \"outcome\": \"" << (pass ? "PASS" : "FAIL") << "\",\n"
+        << "  \"notes\": \"" << jsonEscape(options.notes) << "\"\n"
+        << "}\n";
+}
 }  // namespace
 
 int main(int argc, char** argv) {
     constexpr int32_t sampleRateHz = 44100;
     constexpr int32_t durationMs = 1000;
-
-    int32_t offsetMsDeviceB = 35;
-    if (argc > 1) {
-        offsetMsDeviceB = std::atoi(argv[1]);
-    }
+    const CliOptions options = parseArgs(argc, argv);
 
     auto pattern = makeImpulsePattern(sampleRateHz, durationMs);
     multiconnect::MasterRingBuffer ring(pattern.size());
@@ -49,7 +236,7 @@ int main(int argc, char** argv) {
 
     ring.readWithOffset(0, 0, deviceA.data(), deviceA.size());
 
-    const int32_t targetOffsetSamples = multiconnect::delayMsToSamples(offsetMsDeviceB, sampleRateHz);
+    const int32_t targetOffsetSamples = multiconnect::delayMsToSamples(options.offsetMsDeviceB, sampleRateHz);
     ring.readWithOffset(0, targetOffsetSamples, deviceB.data(), deviceB.size());
 
     const auto impulseA = findFirstImpulse(deviceA, INT16_MAX / 2);
@@ -58,11 +245,17 @@ int main(int argc, char** argv) {
     const int64_t sampleDelta = static_cast<int64_t>(impulseA) - static_cast<int64_t>(impulseB);
     const double measuredOffsetMs = static_cast<double>(sampleDelta) * 1000.0 / sampleRateHz;
 
-    std::cout << "POC_RESULT sampleRate=" << sampleRateHz << "Hz"
-              << " requestedOffsetMs=" << offsetMsDeviceB << " measuredOffsetMs=" << measuredOffsetMs
-              << '\n';
+    const double errorFromRequestedMs = std::abs(measuredOffsetMs - static_cast<double>(options.offsetMsDeviceB));
 
-    const bool pass = std::abs(measuredOffsetMs - static_cast<double>(offsetMsDeviceB)) <= 1.0;
+    std::cout << "POC_RESULT sampleRate=" << sampleRateHz << "Hz"
+              << " requestedOffsetMs=" << options.offsetMsDeviceB << " measuredOffsetMs=" << measuredOffsetMs
+              << " errorFromRequestedMs=" << errorFromRequestedMs << " thresholdMs=" << options.thresholdMs
+              << " deviceA=" << options.deviceA << " deviceB=" << options.deviceB << '\n';
+
+    const bool pass = errorFromRequestedMs <= options.thresholdMs;
+
+    writeArtifactReport(options, sampleRateHz, durationMs, measuredOffsetMs, errorFromRequestedMs, pass);
+
     std::cout << (pass ? "PASS" : "FAIL") << '\n';
     return pass ? 0 : 1;
 }
