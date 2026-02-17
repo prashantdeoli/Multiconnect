@@ -11,15 +11,15 @@ Establish a reproducible feasibility baseline for MultiConnect.
 - [x] Build a compatibility matrix sheet for repeated test runs (`docs/hardware-matrix-template.csv`, validated by `scripts/validate_hardware_matrix.py`).
 
 ### B. Android/NDK Environment
-- [x] Initialize Android Studio project with NDK + CMake enabled (`android/`).
-- [x] Add native module stubs for `sync-core` and `bt-router` (`android/app/src/main/cpp/*_stub.cpp`).
-- [x] Configure build variants: `pocDebug`, `alphaDebug` (`android/app/build.gradle.kts` product flavors).
+- [ ] Initialize Android Studio project with NDK + CMake enabled.
+- [ ] Add native module stubs for `sync-core` and `bt-router`.
+- [ ] Configure build variants: `pocDebug`, `alphaDebug`.
 - [x] Add logging baseline (Logcat tags + native logging macros) via `native/include/multiconnect/logging.h`.
 
 ### C. POC Harness
-- [x] Implement native beep generator (1-second test pattern).
-- [x] Build two-device parallel output prototype.
-- [x] Add timing telemetry and pass/fail threshold report.
+- [ ] Implement native beep generator (1-second test pattern).
+- [ ] Build two-device parallel output prototype.
+- [ ] Add timing telemetry and pass/fail threshold report.
 - [x] Store run artifacts (timestamp, devices, outcome, notes) via `poc_cli --artifact-dir ...`.
 
 ### D. Team Alignment
