@@ -40,16 +40,6 @@ Break the single-speaker limitation on phones by building a brand-agnostic multi
 - `docs/architecture.md` — technical architecture and module contracts.
 - `docs/day1-checklist.md` — immediate execution checklist and owners.
 - `docs/hardware-matrix-template.csv` — starter sheet for compatibility and drift benchmarking.
-- `native/` — C++ proof-of-concept primitives (beep generator, sync math, ring buffer, sync engine, CLI harness).
-- `scripts/run_native_checks.sh` — local build/test command for the native POC components.
-
-## Run Native POC Checks
-
-```bash
-./scripts/run_native_checks.sh
-```
-
-This builds the native project, runs unit checks, and executes `poc_cli` with a 35ms synthetic device offset.
 
 ## Day-1 Goal
 
