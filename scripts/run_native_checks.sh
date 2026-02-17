@@ -3,6 +3,8 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="$ROOT_DIR/native/build"
+ARTIFACT_DIR="$BUILD_DIR/artifacts"
+ESCAPE_ARTIFACT_DIR="$BUILD_DIR/artifacts_escape"
 
 cmake -S "$ROOT_DIR/native" -B "$BUILD_DIR"
 cmake --build "$BUILD_DIR"

@@ -2,6 +2,7 @@
 #include "multiconnect/sync_math.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
