@@ -8,7 +8,7 @@ Establish a reproducible feasibility baseline for MultiConnect.
 ### A. Hardware Readiness
 - [ ] Collect at least 3 speaker brands (example: Sony, Tribit, Niye).
 - [ ] Record model numbers, Bluetooth versions, and battery health state.
-- [ ] Build a compatibility matrix sheet for repeated test runs.
+- [x] Build a compatibility matrix sheet for repeated test runs (`docs/hardware-matrix-template.csv`, validated by `scripts/validate_hardware_matrix.py`).
 
 ### B. Android/NDK Environment
 - [ ] Initialize Android Studio project with NDK + CMake enabled.
