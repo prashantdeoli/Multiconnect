@@ -57,7 +57,7 @@ Drift correction is bounded per call (sample clamp) to avoid abrupt timing jumps
 
 Metrics can be reset per-device or globally (`resetDeviceMetrics`, `resetAllMetrics`) for clean calibration windows and repeatable benchmark runs.
 
-Session topology can be introspected via `deviceCount` and `registeredDeviceIds`, which helps JNI/UI layers render live routing state.
+Session topology can be introspected via `deviceCount` and lexicographically sorted `registeredDeviceIds`, which helps JNI/UI layers render stable live routing state.
 
 The ring buffer read path zero-fills unread tail samples on partial pulls to prevent stale PCM leakage into output frames.
 

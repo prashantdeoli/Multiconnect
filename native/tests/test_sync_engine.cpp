@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <cstdint>
-#include <algorithm>
 #include <vector>
 
 int main() {
@@ -14,7 +13,6 @@ int main() {
 
     assert(engine.deviceCount() == 2);
     auto ids = engine.registeredDeviceIds();
-    std::sort(ids.begin(), ids.end());
     assert(ids.size() == 2);
     assert(ids[0] == "sony");
     assert(ids[1] == "tribit");

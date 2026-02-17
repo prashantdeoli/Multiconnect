@@ -126,6 +126,8 @@ std::vector<std::string> SyncEngine::registeredDeviceIds() const {
         (void)state;
         ids.push_back(deviceId);
     }
+
+    std::sort(ids.begin(), ids.end());
     return ids;
 }
 

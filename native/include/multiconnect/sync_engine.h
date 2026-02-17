@@ -47,6 +47,7 @@ class SyncEngine {
     void resetAllMetrics();
 
     [[nodiscard]] std::size_t deviceCount() const;
+    // Returns registered device IDs in stable lexicographic order.
     [[nodiscard]] std::vector<std::string> registeredDeviceIds() const;
     [[nodiscard]] std::size_t bufferedSamples() const;
     [[nodiscard]] bool hasDevice(const std::string& deviceId) const;
