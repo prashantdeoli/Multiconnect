@@ -6,18 +6,13 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace multiconnect {
 
 struct DeviceStreamState {
     int32_t offsetSamples = 0;
     std::size_t readHead = 0;
-};
-
-struct DeviceStreamMetrics {
-    std::size_t pullCalls = 0;
-    std::size_t pulledSamples = 0;
-    std::size_t lastReadSamples = 0;
 };
 
 class SyncEngine {
@@ -33,22 +28,15 @@ class SyncEngine {
     bool applyDriftCorrectionMs(const std::string& deviceId, float driftMs, int32_t sampleRateHz);
 
     // Pulls cloned samples for a specific device based on its read head and offset.
-    // Returns false if device is unknown or output is null when sampleCount > 0.
-    // When true, outReadSamples contains actual sample count read.
-    bool pullForDevice(const std::string& deviceId,
-                       int16_t* output,
-                       std::size_t sampleCount,
-                       std::size_t* outReadSamples = nullptr);
+    bool pullForDevice(const std::string& deviceId, int16_t* output, std::size_t sampleCount);
 
     [[nodiscard]] std::size_t bufferedSamples() const;
     [[nodiscard]] bool hasDevice(const std::string& deviceId) const;
     [[nodiscard]] DeviceStreamState deviceState(const std::string& deviceId) const;
-    [[nodiscard]] DeviceStreamMetrics deviceMetrics(const std::string& deviceId) const;
 
   private:
     MasterRingBuffer ring_;
     std::unordered_map<std::string, DeviceStreamState> devices_;
-    std::unordered_map<std::string, DeviceStreamMetrics> metrics_;
 };
 
 }  // namespace multiconnect
