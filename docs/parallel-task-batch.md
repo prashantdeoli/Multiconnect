@@ -22,7 +22,7 @@ This plan groups the remaining Day-1 work so multiple owners can execute in para
 
 1. Run `./scripts/run_native_checks.sh` on each PR touching native code.
 2. Keep artifact validation green for both normal and escape-heavy metadata.
-3. Archive latest artifacts in a shared run log for trend visibility (`docs/native-check-run-log.csv` via `scripts/archive_native_run_log.py`).
+3. Archive latest artifacts in a shared run log for trend visibility.
 
 **Deliverable:** green native check runs + validated JSON artifacts attached per run.
 
