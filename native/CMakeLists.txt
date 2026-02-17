@@ -8,7 +8,6 @@ add_library(multiconnect_core
     src/sync_math.cpp
     src/beep_generator.cpp
     src/master_ring_buffer.cpp
-    src/sync_engine.cpp
 )
 
 target_include_directories(multiconnect_core PUBLIC include)
@@ -25,7 +24,3 @@ add_test(NAME test_sync_math COMMAND test_sync_math)
 add_executable(test_ring_buffer tests/test_ring_buffer.cpp)
 target_link_libraries(test_ring_buffer PRIVATE multiconnect_core)
 add_test(NAME test_ring_buffer COMMAND test_ring_buffer)
-
-add_executable(test_sync_engine tests/test_sync_engine.cpp)
-target_link_libraries(test_sync_engine PRIVATE multiconnect_core)
-add_test(NAME test_sync_engine COMMAND test_sync_engine)
