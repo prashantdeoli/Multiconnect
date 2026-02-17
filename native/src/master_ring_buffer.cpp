@@ -1,6 +1,7 @@
 #include "multiconnect/master_ring_buffer.h"
 
 #include <algorithm>
+#include <cstring>
 
 namespace multiconnect {
 
@@ -36,12 +37,6 @@ std::size_t MasterRingBuffer::readWithOffset(std::size_t logicalReadHead,
                                     static_cast<int64_t>(data_.size())) %
                                    static_cast<int64_t>(data_.size());
         output[i] = data_[static_cast<std::size_t>(normalized)];
-    }
-
-    // Clear tail when caller asked for more samples than currently readable,
-    // so downstream audio paths never consume stale buffer values.
-    for (std::size_t i = readable; i < sampleCount; ++i) {
-        output[i] = 0;
     }
 
     return readable;
