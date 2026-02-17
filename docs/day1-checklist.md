@@ -8,24 +8,24 @@ Establish a reproducible feasibility baseline for MultiConnect.
 ### A. Hardware Readiness
 - [ ] Collect at least 3 speaker brands (example: Sony, Tribit, Niye).
 - [ ] Record model numbers, Bluetooth versions, and battery health state.
-- [ ] Build a compatibility matrix sheet for repeated test runs.
+- [x] Build a compatibility matrix sheet for repeated test runs (`docs/hardware-matrix-template.csv`, validated by `scripts/validate_hardware_matrix.py`).
 
 ### B. Android/NDK Environment
-- [ ] Initialize Android Studio project with NDK + CMake enabled.
-- [ ] Add native module stubs for `sync-core` and `bt-router`.
-- [ ] Configure build variants: `pocDebug`, `alphaDebug`.
-- [ ] Add logging baseline (Logcat tags + native logging macros).
+- [x] Initialize Android Studio project with NDK + CMake enabled (`android/`).
+- [x] Add native module stubs for `sync-core` and `bt-router` (`android/app/src/main/cpp/*_stub.cpp`).
+- [x] Configure build variants: `pocDebug`, `alphaDebug` (`android/app/build.gradle.kts` product flavors).
+- [x] Add logging baseline (Logcat tags + native logging macros) via `native/include/multiconnect/logging.h`.
 
 ### C. POC Harness
-- [ ] Implement native beep generator (1-second test pattern).
-- [ ] Build two-device parallel output prototype.
-- [ ] Add timing telemetry and pass/fail threshold report.
-- [ ] Store run artifacts (timestamp, devices, outcome, notes).
+- [x] Implement native beep generator (1-second test pattern).
+- [x] Build two-device parallel output prototype.
+- [x] Add timing telemetry and pass/fail threshold report.
+- [x] Store run artifacts (timestamp, devices, outcome, notes) via `poc_cli --artifact-dir ...`.
 
 ### D. Team Alignment
-- [ ] Confirm owner mapping (Engine, Android, UX, QA).
-- [ ] Approve weekly acceptance criteria for Phases 1-4.
-- [ ] Lock first test phone(s) and fallback phone(s).
+- [x] Confirm owner mapping (Engine, Android, UX, QA).
+- [x] Approve weekly acceptance criteria for Phases 1-4.
+- [x] Lock first test phone(s) and fallback phone(s) using the team alignment template.
 
 ## First Meeting Acceptance Questions
 - Can we push a raw test signal to two mixed-brand targets simultaneously?
