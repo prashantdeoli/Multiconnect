@@ -40,26 +40,6 @@ Break the single-speaker limitation on phones by building a brand-agnostic multi
 - `docs/architecture.md` — technical architecture and module contracts.
 - `docs/day1-checklist.md` — immediate execution checklist and owners.
 - `docs/hardware-matrix-template.csv` — starter sheet for compatibility and drift benchmarking.
-- `native/` — C++ proof-of-concept primitives (beep generator, sync math, ring buffer, sync engine, C API bridge, CLI harness).
-- `scripts/run_native_checks.sh` — local build/test command for the native POC components.
-
-## Run Native POC Checks
-
-```bash
-./scripts/run_native_checks.sh
-```
-
-This builds the native project, runs unit checks, and executes `poc_cli` with a 35ms synthetic device offset.
-
-The sync engine now also tracks per-device telemetry (`pullCalls`, `pulledSamples`, `lastReadSamples`, drift-correction counters) to support upcoming JNI-facing runtime diagnostics.
-
-Drift correction is bounded per call (sample clamp) to avoid abrupt timing jumps that can create audible artifacts during long sessions.
-
-Metrics can be reset per-device or globally (`resetDeviceMetrics`, `resetAllMetrics`) for clean calibration windows and repeatable benchmark runs.
-
-Session topology can be introspected via `deviceCount`, lexicographically sorted `registeredDeviceIds`, snapshot helpers (`deviceSnapshot`, `allDeviceSnapshots`), and `deviceOffsets()` for stable live routing diagnostics and calibration persistence; saved calibration sets can be restored in one call via `applyDeviceOffsets(...)`, and full-session offset baselines can be reset with `resetAllDeviceOffsets(...)`. Snapshots include a `registered` flag so callers can distinguish unknown-device lookups from valid zero-valued runtime state. Aggregate diagnostics are available through `sessionMetrics()` for total pull/correction counters across active devices. A C-compatible bridge (`sync_engine_c_api.h`) is available for JNI-facing integration scaffolding.
-
-The ring buffer read path zero-fills unread tail samples on partial pulls to prevent stale PCM leakage into output frames.
 
 ## Day-1 Goal
 
