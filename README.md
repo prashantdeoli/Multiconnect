@@ -40,7 +40,27 @@ Break the single-speaker limitation on phones by building a brand-agnostic multi
 - `docs/architecture.md` — technical architecture and module contracts.
 - `docs/day1-checklist.md` — immediate execution checklist and owners.
 - `docs/hardware-matrix-template.csv` — starter sheet for compatibility and drift benchmarking.
+- `docs/hardware-readiness.md` — runbook for collecting and validating hardware readiness matrix entries.
+- `docs/hardware-inventory.md` — baseline phone/speaker inventory (models, BT versions, battery state) for Day-1 readiness.
+- `docs/team-alignment.md` — owner mapping, phase acceptance criteria, phone-lock template, and weekly test ritual.
+- `docs/parallel-task-batch.md` — parallel Day-1 execution plan for hardware, Android/NDK bootstrap, and native stability guardrails.
+- `docs/day1-baseline-report.md` — current baseline metrics mapped to Day-1 acceptance questions.
+- `android/` — Android Studio bootstrap project with NDK/CMake wiring, native stubs, and `poc`/`alpha` product flavors.
 
 ## Day-1 Goal
 
 Create a reproducible baseline for feasibility: hardware matrix, Android/NDK project setup, and POC acceptance harness.
+
+## Native POC Harness
+
+Run the baseline native checks (build + unit tests + POC pass/fail run):
+
+```bash
+./scripts/run_native_checks.sh
+```
+
+The POC harness now writes run artifacts (`timestamp`, `devices`, `outcome`, and `notes`) to `native/build/artifacts/` when invoked with `--artifact-dir`.
+
+The native checks also execute sync-engine and beep-generator unit tests to keep core timing primitives covered in CI/local runs.
+
+Native logging macros are available in `native/include/multiconnect/logging.h` and map to Logcat on Android builds.
