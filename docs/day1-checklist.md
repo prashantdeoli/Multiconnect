@@ -17,9 +17,9 @@ Establish a reproducible feasibility baseline for MultiConnect.
 - [ ] Add logging baseline (Logcat tags + native logging macros).
 
 ### C. POC Harness
-- [ ] Implement native beep generator (1-second test pattern).
-- [ ] Build two-device parallel output prototype.
-- [ ] Add timing telemetry and pass/fail threshold report.
+- [x] Implement native beep generator (1-second test pattern).
+- [x] Build two-device parallel output prototype.
+- [x] Add timing telemetry and pass/fail threshold report.
 - [x] Store run artifacts (timestamp, devices, outcome, notes) via `poc_cli --artifact-dir ...`.
 
 ### D. Team Alignment

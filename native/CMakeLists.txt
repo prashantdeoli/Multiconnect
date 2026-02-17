@@ -35,3 +35,7 @@ add_test(NAME test_sync_engine COMMAND test_sync_engine)
 add_executable(test_sync_engine_c_api tests/test_sync_engine_c_api.cpp)
 target_link_libraries(test_sync_engine_c_api PRIVATE multiconnect_core)
 add_test(NAME test_sync_engine_c_api COMMAND test_sync_engine_c_api)
+
+add_executable(test_beep_generator tests/test_beep_generator.cpp)
+target_link_libraries(test_beep_generator PRIVATE multiconnect_core)
+add_test(NAME test_beep_generator COMMAND test_beep_generator)
