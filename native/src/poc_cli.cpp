@@ -7,7 +7,6 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
-#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -15,6 +14,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <chrono>
 #include <vector>
 
 namespace {
@@ -64,26 +64,6 @@ bool parseDouble(std::string_view text, double* outValue) {
     return true;
 }
 
-bool parseInt32(std::string_view text, int32_t* outValue) {
-    if (outValue == nullptr) {
-        return false;
-    }
-
-    char* end = nullptr;
-    const std::string owned(text);
-    const long value = std::strtol(owned.c_str(), &end, 10);
-    if (end == owned.c_str() || *end != '\0') {
-        return false;
-    }
-
-    if (value < static_cast<long>(INT32_MIN) || value > static_cast<long>(INT32_MAX)) {
-        return false;
-    }
-
-    *outValue = static_cast<int32_t>(value);
-    return true;
-}
-
 CliOptions parseArgs(int argc, char** argv) {
     CliOptions options;
     bool offsetAssigned = false;
@@ -120,11 +100,8 @@ CliOptions parseArgs(int argc, char** argv) {
         }
 
         if (!offsetAssigned) {
-            int32_t offsetMs = 0;
-            if (parseInt32(arg, &offsetMs)) {
-                options.offsetMsDeviceB = offsetMs;
-                offsetAssigned = true;
-            }
+            options.offsetMsDeviceB = std::atoi(arg.c_str());
+            offsetAssigned = true;
         }
     }
 
@@ -134,56 +111,11 @@ CliOptions parseArgs(int argc, char** argv) {
 std::string makeRunTimestamp() {
     const auto now = std::chrono::system_clock::now();
     const auto nowTime = std::chrono::system_clock::to_time_t(now);
-
-    std::tm tm{};
-#if defined(_WIN32)
-    gmtime_s(&tm, &nowTime);
-#else
-    gmtime_r(&nowTime, &tm);
-#endif
+    std::tm tm = *std::gmtime(&nowTime);
 
     std::ostringstream oss;
     oss << std::put_time(&tm, "%Y%m%dT%H%M%SZ");
     return oss.str();
-}
-
-std::string jsonEscape(const std::string& value) {
-    std::ostringstream escaped;
-    for (const unsigned char ch : value) {
-        switch (ch) {
-            case '"':
-                escaped << "\\\"";
-                break;
-            case '\\':
-                escaped << "\\\\";
-                break;
-            case '\b':
-                escaped << "\\b";
-                break;
-            case '\f':
-                escaped << "\\f";
-                break;
-            case '\n':
-                escaped << "\\n";
-                break;
-            case '\r':
-                escaped << "\\r";
-                break;
-            case '\t':
-                escaped << "\\t";
-                break;
-            default:
-                if (ch < 0x20) {
-                    escaped << "\\u" << std::hex << std::setw(4) << std::setfill('0') << static_cast<int>(ch)
-                            << std::dec;
-                } else {
-                    escaped << static_cast<char>(ch);
-                }
-                break;
-        }
-    }
-
-    return escaped.str();
 }
 
 void writeArtifactReport(const CliOptions& options,
@@ -203,22 +135,22 @@ void writeArtifactReport(const CliOptions& options,
     const fs::path outputPath = fs::path(options.artifactDir) / ("poc_run_" + timestamp + ".json");
     std::ofstream out(outputPath);
     if (!out.is_open()) {
-        MC_LOGW("unable to open artifact report path=%s", outputPath.string().c_str());
+        std::cerr << "WARN unable to open artifact report path=" << outputPath << '\n';
         return;
     }
 
     out << "{\n"
-        << "  \"timestamp\": \"" << jsonEscape(timestamp) << "\",\n"
+        << "  \"timestamp\": \"" << timestamp << "\",\n"
         << "  \"sampleRateHz\": " << sampleRateHz << ",\n"
         << "  \"durationMs\": " << durationMs << ",\n"
-        << "  \"deviceA\": \"" << jsonEscape(options.deviceA) << "\",\n"
-        << "  \"deviceB\": \"" << jsonEscape(options.deviceB) << "\",\n"
+        << "  \"deviceA\": \"" << options.deviceA << "\",\n"
+        << "  \"deviceB\": \"" << options.deviceB << "\",\n"
         << "  \"requestedOffsetMs\": " << options.offsetMsDeviceB << ",\n"
         << "  \"measuredOffsetMs\": " << measuredOffsetMs << ",\n"
         << "  \"errorFromRequestedMs\": " << errorFromRequestedMs << ",\n"
         << "  \"thresholdMs\": " << options.thresholdMs << ",\n"
         << "  \"outcome\": \"" << (pass ? "PASS" : "FAIL") << "\",\n"
-        << "  \"notes\": \"" << jsonEscape(options.notes) << "\"\n"
+        << "  \"notes\": \"" << options.notes << "\"\n"
         << "}\n";
 }
 }  // namespace
@@ -256,11 +188,6 @@ int main(int argc, char** argv) {
     const bool pass = errorFromRequestedMs <= options.thresholdMs;
 
     writeArtifactReport(options, sampleRateHz, durationMs, measuredOffsetMs, errorFromRequestedMs, pass);
-
-    MC_LOGI("poc_cli outcome=%s requestedOffsetMs=%d measuredOffsetMs=%.4f",
-            pass ? "PASS" : "FAIL",
-            options.offsetMsDeviceB,
-            measuredOffsetMs);
 
     std::cout << (pass ? "PASS" : "FAIL") << '\n';
     return pass ? 0 : 1;
