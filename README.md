@@ -40,6 +40,7 @@ Break the single-speaker limitation on phones by building a brand-agnostic multi
 - `docs/architecture.md` — technical architecture and module contracts.
 - `docs/day1-checklist.md` — immediate execution checklist and owners.
 - `docs/hardware-matrix-template.csv` — starter sheet for compatibility and drift benchmarking.
+- `docs/team-alignment.md` — owner mapping, phase acceptance criteria, phone-lock template, and weekly test ritual.
 
 ## Day-1 Goal
 
