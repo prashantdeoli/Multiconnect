@@ -44,3 +44,13 @@ Break the single-speaker limitation on phones by building a brand-agnostic multi
 ## Day-1 Goal
 
 Create a reproducible baseline for feasibility: hardware matrix, Android/NDK project setup, and POC acceptance harness.
+
+## Native POC Harness
+
+Run the baseline native checks (build + unit tests + POC pass/fail run):
+
+```bash
+./scripts/run_native_checks.sh
+```
+
+The POC harness now writes run artifacts (`timestamp`, `devices`, `outcome`, and `notes`) to `native/build/artifacts/` when invoked with `--artifact-dir`.

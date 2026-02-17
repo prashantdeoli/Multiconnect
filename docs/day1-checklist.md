@@ -20,7 +20,7 @@ Establish a reproducible feasibility baseline for MultiConnect.
 - [ ] Implement native beep generator (1-second test pattern).
 - [ ] Build two-device parallel output prototype.
 - [ ] Add timing telemetry and pass/fail threshold report.
-- [ ] Store run artifacts (timestamp, devices, outcome, notes).
+- [x] Store run artifacts (timestamp, devices, outcome, notes) via `poc_cli --artifact-dir ...`.
 
 ### D. Team Alignment
 - [ ] Confirm owner mapping (Engine, Android, UX, QA).
