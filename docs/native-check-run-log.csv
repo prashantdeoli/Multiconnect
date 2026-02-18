@@ -1,0 +1,10 @@
+recorded_at_utc,standard_artifact,escape_artifact,outcome_standard,outcome_escape,requested_offset_ms,measured_offset_ms,threshold_ms,error_from_requested_ms
+2026-02-17T17:51:02Z,native/build/artifacts/poc_run_20260217T175100Z.json,native/build/artifacts_escape/poc_run_20260217T175101Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-17T17:55:21Z,native/build/artifacts/poc_run_20260217T175519Z.json,native/build/artifacts_escape/poc_run_20260217T175520Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-17T18:00:53Z,native/build/artifacts/poc_run_20260217T180051Z.json,native/build/artifacts_escape/poc_run_20260217T180052Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-18T05:42:30Z,native/build/artifacts/poc_run_20260218T054228Z.json,native/build/artifacts_escape/poc_run_20260218T054229Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-18T05:42:47Z,native/build/artifacts/poc_run_20260218T054245Z.json,native/build/artifacts_escape/poc_run_20260218T054245Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-18T05:49:23Z,native/build/artifacts/poc_run_20260218T054922Z.json,native/build/artifacts_escape/poc_run_20260218T054922Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-18T05:49:47Z,native/build/artifacts/poc_run_20260218T054946Z.json,native/build/artifacts_escape/poc_run_20260218T054946Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-18T05:50:19Z,native/build/artifacts/poc_run_20260218T055017Z.json,native/build/artifacts_escape/poc_run_20260218T055018Z.json,PASS,PASS,35,34.9887,1,0.0113379
+2026-02-18T05:50:35Z,native/build/artifacts/poc_run_20260218T055034Z.json,native/build/artifacts_escape/poc_run_20260218T055035Z.json,PASS,PASS,35,34.9887,1,0.0113379
