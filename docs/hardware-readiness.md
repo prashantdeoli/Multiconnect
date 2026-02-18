@@ -30,28 +30,3 @@ Require at least 3 collected runs before weekly review:
 ```bash
 python scripts/validate_hardware_matrix.py --csv docs/hardware-matrix-template.csv --min-rows 3
 ```
-
-
-## Entry Helper
-
-Use the helper script to append a complete row without manual CSV editing:
-
-```bash
-python scripts/add_hardware_matrix_entry.py \
-  --run-id 20260218-qa-01 \
-  --date 2026-02-18 \
-  --phone-model "Pixel 7" \
-  --phone-bt-version "5.3" \
-  --speaker-brand "Sony" \
-  --speaker-model "SRS-XB23" \
-  --speaker-bt-version "5.0" \
-  --battery-percent 84 \
-  --signal-strength-dbm -58 \
-  --observed-latency-ms 41.2 \
-  --drift-after-30m-ms 7.5 \
-  --drift-after-120m-ms 18.9 \
-  --dropouts-count 0 \
-  --notes "baseline evening run"
-```
-
-Add `--dry-run` to preview the row without writing.

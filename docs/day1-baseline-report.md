@@ -5,7 +5,7 @@ This report captures the current reproducible baseline from the native POC harne
 ## Baseline Run Snapshot
 
 - Source command: `./scripts/run_native_checks.sh`
-- Latest standard artifact: `native/build/artifacts/poc_run_20260218T062053Z.json`
+- Latest standard artifact: `native/build/artifacts/poc_run_20260217T174325Z.json`
 - Result: `PASS`
 
 ### Key Metrics
@@ -40,5 +40,3 @@ This report captures the current reproducible baseline from the native POC harne
 
 - Use `docs/hardware-inventory.md` + `docs/hardware-matrix-template.csv` for real-device runs.
 - Update this report weekly with latest artifact IDs and observed hardware notes.
-- Check trend history in `docs/native-check-run-log.csv` for run-over-run deltas.
-- First-test-phone lock is recorded in `docs/team-alignment.md` (Primary: Pixel 7, Fallback: Pixel 6a).
