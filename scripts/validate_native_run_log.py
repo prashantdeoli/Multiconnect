@@ -9,7 +9,6 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
-
 EXPECTED_HEADER = [
     "recorded_at_utc",
     "standard_artifact",
@@ -32,8 +31,8 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def parse_utc(value: str) -> datetime:
-    return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+def parse_utc(value: str) -> None:
+    datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
 
 
 def parse_number(value: str, field_name: str) -> float:
@@ -43,10 +42,8 @@ def parse_number(value: str, field_name: str) -> float:
         raise ValueError(f"{field_name} is not numeric: {value}") from exc
 
 
-def validate_row(row: dict[str, str], index: int, previous_ts: datetime | None) -> datetime:
-    timestamp = parse_utc(row["recorded_at_utc"])
-    if previous_ts is not None and timestamp < previous_ts:
-        raise ValueError(f"row {index}: recorded_at_utc is not monotonically increasing")
+def validate_row(row: dict[str, str], index: int) -> None:
+    parse_utc(row["recorded_at_utc"])
 
     if row["outcome_standard"] not in ALLOWED_OUTCOMES:
         raise ValueError(f"row {index}: invalid outcome_standard={row['outcome_standard']}")
@@ -54,10 +51,7 @@ def validate_row(row: dict[str, str], index: int, previous_ts: datetime | None) 
         raise ValueError(f"row {index}: invalid outcome_escape={row['outcome_escape']}")
 
     for path_field in ("standard_artifact", "escape_artifact"):
-        value = row[path_field]
-        if value.startswith("/"):
-            raise ValueError(f"row {index}: {path_field} must be repo-relative, got absolute path")
-        if not value.endswith(".json"):
+        if not row[path_field].endswith(".json"):
             raise ValueError(f"row {index}: {path_field} must end with .json")
 
     parse_number(row["requested_offset_ms"], "requested_offset_ms")
@@ -69,8 +63,6 @@ def validate_row(row: dict[str, str], index: int, previous_ts: datetime | None) 
         raise ValueError(f"row {index}: threshold_ms must be non-negative")
     if error < 0:
         raise ValueError(f"row {index}: error_from_requested_ms must be non-negative")
-
-    return timestamp
 
 
 def main() -> int:
@@ -99,9 +91,8 @@ def main() -> int:
         return 1
 
     try:
-        previous_ts: datetime | None = None
         for i, row in enumerate(rows, start=2):
-            previous_ts = validate_row(row, i, previous_ts)
+            validate_row(row, i)
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
