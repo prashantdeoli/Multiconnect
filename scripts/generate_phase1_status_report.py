@@ -40,17 +40,8 @@ def read_run_log(path: Path) -> tuple[int, int, str]:
     return total, passed, latest
 
 
-def display_path(path: Path, repo_root: Path) -> str:
-    try:
-        return path.resolve().relative_to(repo_root.resolve()).as_posix()
-    except ValueError:
-        return path.as_posix()
-
-
 def main() -> int:
     args = parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
-
     hardware_matrix = Path(args.hardware_matrix)
     run_log = Path(args.run_log)
     output = Path(args.output)
@@ -77,14 +68,8 @@ _Last updated (UTC): {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}
 ## Latest Evidence
 
 - Latest standard artifact: `{latest_artifact}`
-- Hardware matrix file: `{display_path(hardware_matrix, repo_root)}`
-- Native run-log file: `{display_path(run_log, repo_root)}`
-
-## Next Actions (when NOT READY)
-
-- Collect or append real-device rows with `python scripts/add_hardware_matrix_entry.py ...`.
-- Regenerate this snapshot after updates using `python scripts/generate_phase1_status_report.py`.
-- Re-run `./scripts/run_native_checks.sh` to re-evaluate the gate.
+- Hardware matrix file: `{hardware_matrix.as_posix()}`
+- Native run-log file: `{run_log.as_posix()}`
 """
 
     output.write_text(content, encoding="utf-8")
