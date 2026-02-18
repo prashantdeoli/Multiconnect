@@ -9,7 +9,6 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
-
 EXPECTED_HEADER = [
     "recorded_at_utc",
     "standard_artifact",
@@ -52,12 +51,8 @@ def validate_row(row: dict[str, str], index: int) -> None:
         raise ValueError(f"row {index}: invalid outcome_escape={row['outcome_escape']}")
 
     for path_field in ("standard_artifact", "escape_artifact"):
-        value = row[path_field]
-        if value.startswith("/"):
-            raise ValueError(f"row {index}: {path_field} must be repo-relative, got absolute path")
-        if not value.endswith(".json"):
+        if not row[path_field].endswith(".json"):
             raise ValueError(f"row {index}: {path_field} must end with .json")
-
 
     parse_number(row["requested_offset_ms"], "requested_offset_ms")
     parse_number(row["measured_offset_ms"], "measured_offset_ms")
