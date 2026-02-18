@@ -10,8 +10,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 import sys
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-
 HEADER = [
     "recorded_at_utc",
     "standard_artifact",
@@ -46,13 +44,6 @@ def ensure_header(path: Path) -> None:
         writer.writerow(HEADER)
 
 
-def to_repo_relative(path: Path) -> str:
-    try:
-        return path.resolve().relative_to(REPO_ROOT).as_posix()
-    except ValueError:
-        return path.as_posix()
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifact-dir", required=True)
@@ -80,8 +71,8 @@ def main() -> int:
         writer.writerow(
             [
                 datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                to_repo_relative(standard_path),
-                to_repo_relative(escape_path),
+                standard_path.as_posix(),
+                escape_path.as_posix(),
                 standard.get("outcome", ""),
                 escape.get("outcome", ""),
                 standard.get("requestedOffsetMs", ""),
