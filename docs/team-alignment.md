@@ -33,12 +33,12 @@
 
 ## First Test Phone Lock (Template)
 
-- Primary phone model: Pixel 7
-- Primary phone Android version: Android 14
-- Fallback phone model: Pixel 6a
-- Fallback phone Android version: Android 14
-- Lock date: 2026-02-17
-- Owner sign-off: QA Lead + Android Lead
+- Primary phone model: ____________________
+- Primary phone Android version: ____________________
+- Fallback phone model: ____________________
+- Fallback phone Android version: ____________________
+- Lock date: ____________________
+- Owner sign-off: ____________________
 
 ## Weekly Test Ritual
 
@@ -47,4 +47,3 @@
 3. Record artifact files + notes in the run log.
 4. Review pass/fail against active phase criteria.
 5. Raise blockers with owner + mitigation before next planning checkpoint.
-6. Append latest entry to `docs/native-check-run-log.csv` and tag weekly gate status.
