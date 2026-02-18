@@ -1,1 +1,4 @@
 run_id,date,phone_model,phone_bt_version,speaker_brand,speaker_model,speaker_bt_version,battery_percent,signal_strength_dbm,observed_latency_ms,drift_after_30m_ms,drift_after_120m_ms,dropouts_count,notes
+MC-001,2026-02-18,Test_Device_Pro,5.3,Sony,H20R,5.0,85,-42,120,5,15,0,Primary master speaker for baseline sync
+MC-002,2026-02-18,Test_Device_Pro,5.3,Tribit,StormBox 2,5.3,90,-38,165,8,22,0,High-fidelity unit; requires ~45ms offset
+MC-003,2026-02-18,Test_Device_Pro,5.3,Mivi,Classic Box,5.1,78,-45,210,15,40,1,Budget chipset; monitor for clock drift
