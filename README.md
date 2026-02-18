@@ -40,27 +40,7 @@ Break the single-speaker limitation on phones by building a brand-agnostic multi
 - `docs/architecture.md` — technical architecture and module contracts.
 - `docs/day1-checklist.md` — immediate execution checklist and owners.
 - `docs/hardware-matrix-template.csv` — starter sheet for compatibility and drift benchmarking.
-- `docs/hardware-readiness.md` — runbook for collecting and validating hardware readiness matrix entries.
-- `docs/hardware-inventory.md` — baseline phone/speaker inventory (models, BT versions, battery state) for Day-1 readiness.
 - `docs/team-alignment.md` — owner mapping, phase acceptance criteria, phone-lock template, and weekly test ritual.
-- `docs/parallel-task-batch.md` — parallel Day-1 execution plan for hardware, Android/NDK bootstrap, and native stability guardrails.
-- `docs/day1-baseline-report.md` — current baseline metrics mapped to Day-1 acceptance questions.
-- `docs/day1-acceptance-evidence.json` — canonical status/evidence inputs for acceptance items #3 and #4.
-- `docs/native-check-run-log.csv` — shared history of native check/artifact runs for trend visibility.
-- `docs/phase1-status.md` — generated readiness snapshot from hardware/run-log evidence.
-- `docs/phase1-hardware-test-plan.md` — generated three-run execution checklist to unblock Phase-1 hardware evidence.
-- `docs/project-blockers.md` — generated blocker snapshot derived from readiness + baseline acceptance items.
-- `scripts/validate_native_run_log.py` — integrity checks for native run-log schema, ordering, and values.
-- `scripts/validate_day1_baseline_report.py` — ensures baseline report metrics match latest archived artifact.
-- `scripts/validate_day1_acceptance_config.py` — validates acceptance-evidence config schema/status values before report generation.
-- `scripts/validate_phase1_readiness.py` — reports Phase-1 readiness from hardware-run coverage and PASS run-log counts.
-- `scripts/add_hardware_matrix_entry.py` — helper to append validated real-device rows to the hardware matrix CSV.
-- `scripts/update_day1_baseline_report.py` — refreshes baseline report metrics/artifact reference from latest run-log entry.
-- `scripts/apply_day1_acceptance_updates.py` — updates Day-1 baseline acceptance statuses/evidence for physical audio + UI responsiveness checks (and can persist them to config).
-- `scripts/generate_phase1_status_report.py` — emits `docs/phase1-status.md` with a compact readiness snapshot.
-- `scripts/generate_phase1_hardware_plan.py` — generates `docs/phase1-hardware-test-plan.md` with ready-to-run hardware collection commands.
-- `scripts/generate_project_blockers_report.py` — generates `docs/project-blockers.md` from readiness and baseline pending items.
-- `android/` — Android Studio bootstrap project with NDK/CMake wiring, native stubs, and `poc`/`alpha` product flavors.
 
 ## Day-1 Goal
 
@@ -75,32 +55,3 @@ Run the baseline native checks (build + unit tests + POC pass/fail run):
 ```
 
 The POC harness now writes run artifacts (`timestamp`, `devices`, `outcome`, and `notes`) to `native/build/artifacts/` when invoked with `--artifact-dir`.
-
-The native checks also execute sync-engine and beep-generator unit tests to keep core timing primitives covered in CI/local runs.
-
-Run-log archiving keeps the latest entries bounded (`archive_native_run_log.py --max-rows`, default: 200) to avoid unbounded CSV growth.
-
-Run `PHASE1_ENFORCE=1 ./scripts/run_native_checks.sh` (or `python scripts/validate_phase1_readiness.py --enforce`) when you want strict Phase-1 gate enforcement for milestone signoff.
-
-Need a quick unblock plan for missing hardware rows? Generate it with:
-
-```bash
-python scripts/generate_phase1_hardware_plan.py --date 2026-02-18 --initials qa
-```
-
-To close remaining Day-1 acceptance blockers after manual validation, update the baseline report with:
-
-```bash
-python scripts/apply_day1_acceptance_updates.py \
-  --audio-status Pass \
-  --audio-evidence "No crackle in 3/3 30-min physical runs (MC-001..MC-003)." \
-  --audio-next-step "Track weekly regressions in hardware matrix notes." \
-  --ui-status Pass \
-  --ui-evidence "No visible jank during route switch + calibration interactions." \
-  --ui-next-step "Re-check responsiveness on each new Android build." \
-  --write-config
-```
-
-Then run `./scripts/run_native_checks.sh` to regenerate `docs/project-blockers.md` (the pipeline reapplies `docs/day1-acceptance-evidence.json` automatically).
-
-Native logging macros are available in `native/include/multiconnect/logging.h` and map to Logcat on Android builds.
