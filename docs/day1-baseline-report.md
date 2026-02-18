@@ -5,7 +5,7 @@ This report captures the current reproducible baseline from the native POC harne
 ## Baseline Run Snapshot
 
 - Source command: `./scripts/run_native_checks.sh`
-- Latest standard artifact: `native/build/artifacts/poc_run_20260218T165604Z.json`
+- Latest standard artifact: `native/build/artifacts/poc_run_20260217T174325Z.json`
 - Result: `PASS`
 
 ### Key Metrics
@@ -30,10 +30,13 @@ This report captures the current reproducible baseline from the native POC harne
    - **Status:** Captured in current native simulation.
    - **Evidence:** measured offset `34.9887 ms` vs requested `35 ms` (error `0.0113379 ms`).
 3. **Is there audible crackle/popping under current buffer strategy?**
-   - **Status:** Pending.
-   - **Evidence:** Pending physical-device validation.
-   - **Next step:** run hardware matrix sessions with real speaker pairs and annotate notes.
+   - **Status:** Pending physical-device validation.
+   - **Next step:** run hardware matrix sessions with real speaker pairs and annotate `notes`.
 4. **Does app/UI responsiveness degrade while native routing runs?**
-   - **Status:** Pending.
-   - **Evidence:** Pending Android app integration benchmark.
+   - **Status:** Pending Android app integration benchmark.
    - **Next step:** capture frame/render responsiveness once browser/audio routing UI is integrated.
+
+## Follow-up
+
+- Use `docs/hardware-inventory.md` + `docs/hardware-matrix-template.csv` for real-device runs.
+- Update this report weekly with latest artifact IDs and observed hardware notes.
