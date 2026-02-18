@@ -10,8 +10,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 import sys
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-
 HEADER = [
     "recorded_at_utc",
     "standard_artifact",
@@ -46,46 +44,11 @@ def ensure_header(path: Path) -> None:
         writer.writerow(HEADER)
 
 
-def to_repo_relative(path: Path) -> str:
-    try:
-        return path.resolve().relative_to(REPO_ROOT).as_posix()
-    except ValueError:
-        return path.as_posix()
-
-
-def trim_rows(path: Path, max_rows: int) -> None:
-    if max_rows <= 0 or not path.exists():
-        return
-
-    with path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.reader(handle)
-        rows = list(reader)
-
-    if len(rows) <= 1:
-        return
-
-    header, data_rows = rows[0], rows[1:]
-    if len(data_rows) <= max_rows:
-        return
-
-    kept = data_rows[-max_rows:]
-    with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
-        writer.writerow(header)
-        writer.writerows(kept)
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifact-dir", required=True)
     parser.add_argument("--escape-artifact-dir", required=True)
     parser.add_argument("--run-log", default="docs/native-check-run-log.csv")
-    parser.add_argument(
-        "--max-rows",
-        type=int,
-        default=200,
-        help="Maximum data rows to keep in the run log (0 disables trimming).",
-    )
     args = parser.parse_args()
 
     artifact_dir = Path(args.artifact_dir)
@@ -108,8 +71,8 @@ def main() -> int:
         writer.writerow(
             [
                 datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                to_repo_relative(standard_path),
-                to_repo_relative(escape_path),
+                standard_path.as_posix(),
+                escape_path.as_posix(),
                 standard.get("outcome", ""),
                 escape.get("outcome", ""),
                 standard.get("requestedOffsetMs", ""),
@@ -119,7 +82,6 @@ def main() -> int:
             ]
         )
 
-    trim_rows(run_log, args.max_rows)
     print(f"Archived run metadata to {run_log}")
     return 0
 
