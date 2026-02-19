@@ -25,12 +25,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--skip-checks",
         action="store_true",
-        help="Only update acceptance config/report; skip follow-up regeneration checks.",
-    )
-    parser.add_argument(
-        "--refresh-only",
-        action="store_true",
-        help="Regenerate report artifacts without running full native build/test pipeline.",
+        help="Only update acceptance config/report; skip run_native_checks.sh execution.",
     )
     parser.add_argument("--repo", default=".")
     return parser.parse_args()
@@ -39,23 +34,6 @@ def parse_args() -> argparse.Namespace:
 def run(cmd: list[str], cwd: Path) -> None:
     print("+", " ".join(cmd))
     subprocess.run(cmd, cwd=cwd, check=True)
-
-
-
-def run_refresh_only(repo: Path) -> None:
-    # Lightweight mode: reuse current baseline metrics and only reapply acceptance
-    # evidence + regenerate status/blocker summaries.
-    run(
-        [
-            "python3",
-            "scripts/apply_day1_acceptance_updates.py",
-            "--from-config",
-        ],
-        cwd=repo,
-    )
-    run(["python3", "scripts/generate_phase1_status_report.py"], cwd=repo)
-    run(["python3", "scripts/generate_project_blockers_report.py"], cwd=repo)
-    run(["python3", "scripts/validate_phase1_readiness.py"], cwd=repo)
 
 
 def main() -> int:
@@ -83,21 +61,15 @@ def main() -> int:
         cwd=repo,
     )
 
-    if args.skip_checks:
-        return 0
-
-    if args.refresh_only:
-        run_refresh_only(repo)
-    else:
+    if not args.skip_checks:
         run(["bash", "scripts/run_native_checks.sh"], cwd=repo)
-
-    print("\nUpdated blockers snapshot:")
-    with (repo / "docs/project-blockers.md").open(encoding="utf-8") as handle:
-        for _ in range(20):
-            line = handle.readline()
-            if not line:
-                break
-            print(line.rstrip())
+        print("\nUpdated blockers snapshot:")
+        with (repo / "docs/project-blockers.md").open(encoding="utf-8") as handle:
+            for _ in range(20):
+                line = handle.readline()
+                if not line:
+                    break
+                print(line.rstrip())
 
     return 0
 

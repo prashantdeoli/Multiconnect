@@ -40,11 +40,6 @@ def pending_acceptance_items(baseline_text: str) -> list[str]:
     return pending
 
 
-def is_gate_ready(gate_value: str) -> bool:
-    normalized = gate_value.strip().upper()
-    return normalized.startswith("READY")
-
-
 def main() -> int:
     args = parse_args()
     phase1_path = Path(args.phase1_status)
@@ -58,7 +53,7 @@ def main() -> int:
     pending_items = pending_acceptance_items(baseline_text)
 
     blockers: list[str] = []
-    if not is_gate_ready(gate_value):
+    if "READY" not in gate_value:
         blockers.append(f"Phase-1 gate is not ready ({gate_value}).")
     for item in pending_items:
         blockers.append(f"Acceptance item pending: {item}")
