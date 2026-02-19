@@ -1,0 +1,12 @@
+{
+  "audio": {
+    "status": "Pending",
+    "evidence": "Pending physical-device validation.",
+    "next_step": "run hardware matrix sessions with real speaker pairs and annotate notes."
+  },
+  "ui": {
+    "status": "Pending",
+    "evidence": "Pending Android app integration benchmark.",
+    "next_step": "capture frame/render responsiveness once browser/audio routing UI is integrated."
+  }
+}
